@@ -94,7 +94,10 @@ export function buildArgs(o) {
   args.push("-pix_fmt", "yuv420p");
 
   if (o.audio === "none") args.push("-an");
-  else args.push("-c:a", webm ? "libopus" : "aac", "-b:a", o.audio);
+  // libvorbis, since libopus crashes ffmpeg.wasm 0.12 on stereo input ("memory access out of bounds").
+  else args.push("-c:a", webm ? "libvorbis" : "aac", "-b:a", o.audio);
+  // Vorbis cannot do stereo at 32k; mono is fine for the "voice" setting.
+  if (audioBps && audioBps <= 32000) args.push("-ac", "1");
 
   if (!webm) args.push("-movflags", "+faststart");
   args.push("-y", o.output);

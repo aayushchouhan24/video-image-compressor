@@ -24,7 +24,7 @@ test("trim changes clip length and bitrate", () => {
 
 test("webm quality mode uses vp8 crf without x264 preset", () => {
   const { args } = buildArgs({ ...base, format: "webm", mode: "quality", output: "out.webm" });
-  assert.ok(args.includes("libvpx") && args.includes("libopus"));
+  assert.ok(args.includes("libvpx") && args.includes("libvorbis"));
   assert.ok(!args.includes("-preset") && !args.includes("-movflags"));
   assert.equal(args[args.indexOf("-b:v") + 1], "0");
 });

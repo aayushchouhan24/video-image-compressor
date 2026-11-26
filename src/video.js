@@ -37,6 +37,7 @@ async function getEngine() {
   // The log carries "time=" which works with -ss/-t; the built-in progress event does not.
   ffmpeg.on("log", ({ message }) => {
     if (message.trim()) lastLog = message.trim();
+    console.debug("[ffmpeg]", message);
     const t = parseLogTime(message);
     if (t != null) onTime?.(t);
   });

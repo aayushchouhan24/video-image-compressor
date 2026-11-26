@@ -1,4 +1,4 @@
-# Smasher
+# Video & Image Compressor
 
 Compress videos and images to a target size, right in your browser. Nothing is uploaded: every file stays on your device.
 

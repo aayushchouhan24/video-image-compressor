@@ -111,7 +111,7 @@ async function compressAll() {
       done++;
       before += file.size;
       after += r.blob.size;
-      const name = `${file.name.replace(/\.[^.]+$/, "")}-smashed.${EXT[type]}`;
+      const name = `${file.name.replace(/\.[^.]+$/, "")}-compressed.${EXT[type]}`;
       $("imgResults").append(resultRow(file, r, name));
     }
     $("imgProgress").style.width = `${((i + 1) / list.length) * 100}%`;

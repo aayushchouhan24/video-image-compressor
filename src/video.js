@@ -166,7 +166,7 @@ function showResult(blob, format, seconds) {
   const saved = (1 - blob.size / file.size) * 100;
   $("output").src = outputURL;
   $("download").href = outputURL;
-  $("download").download = `${file.name.replace(/\.[^.]+$/, "")}-smashed.${format}`;
+  $("download").download = `${file.name.replace(/\.[^.]+$/, "")}-compressed.${format}`;
   $("download").textContent = `Download (${formatSize(blob.size)})`;
   $("stats").innerHTML = `
     <div><b>${formatSize(file.size)}</b><span>Original</span></div>

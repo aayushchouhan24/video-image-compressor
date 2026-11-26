@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Compress videos and images in your browser. Nothing is uploaded." />
+    <title>Smasher</title>
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <p class="tag">LOCAL · PRIVATE · NO UPLOAD</p>
+        <h1>Smasher<span>.</span></h1>
+        <p class="sub">Shrink videos and images to a target size right in your browser. Nothing leaves your device.</p>
+      </header>
+
+      <div class="tabs" role="tablist">
+        <button role="tab" data-tab="video" aria-controls="videoTool" aria-selected="true">Video</button>
+        <button role="tab" data-tab="image" aria-controls="imageTool" aria-selected="false">Image</button>
+      </div>
+
+      <div id="videoTool" role="tabpanel">
+      <label class="drop" id="drop" for="file">
+        <input type="file" id="file" accept="video/*,.mkv,.mov" />
+        <strong>Drop a video here, or click to choose</strong>
+        <span>MP4, MOV, WebM, MKV and most formats your browser can read</span>
+      </label>
+
+      <section class="preview hidden" id="previewBox">
+        <video id="preview" controls muted playsinline></video>
+        <p id="fileInfo" class="muted"></p>
+      </section>
+
+      <section class="panel">
+        <div class="grid">
+          <label>Mode
+            <select id="mode">
+              <option value="target">Hit a target size</option>
+              <option value="quality">Keep a quality level</option>
+            </select>
+          </label>
+
+          <label data-mode="target">Target size (MB)
+            <input type="number" id="target" value="25" min="0.1" step="0.1" />
+            <span class="chips">
+              <button type="button" data-mb="8">8 · Discord</button>
+              <button type="button" data-mb="16">16 · WhatsApp</button>
+              <button type="button" data-mb="25">25 · Email</button>
+              <button type="button" data-mb="50">50</button>
+            </span>
+          </label>
+
+          <label data-mode="quality">Quality
+            <select id="crf">
+              <option value="23">High (bigger file)</option>
+              <option value="28" selected>Balanced</option>
+              <option value="33">Small file</option>
+              <option value="38">Very small</option>
+            </select>
+          </label>
+
+          <label>Format
+            <select id="format">
+              <option value="mp4">MP4 / H.264 (plays everywhere)</option>
+              <option value="webm">WebM / VP8 (for web pages)</option>
+            </select>
+          </label>
+
+          <label>Resolution
+            <select id="resolution">
+              <option value="2160">4K (2160p)</option>
+              <option value="1080">1080p</option>
+              <option value="720" selected>720p</option>
+              <option value="480">480p</option>
+              <option value="360">360p</option>
+              <option value="0">Original</option>
+            </select>
+          </label>
+
+          <label>Frame rate
+            <select id="fps">
+              <option value="0">Original</option>
+              <option value="60">60 fps</option>
+              <option value="30" selected>30 fps</option>
+              <option value="24">24 fps</option>
+              <option value="15">15 fps</option>
+            </select>
+          </label>
+
+          <label>Audio
+            <select id="audio">
+              <option value="128k">128 kbps</option>
+              <option value="96k" selected>96 kbps</option>
+              <option value="64k">64 kbps</option>
+              <option value="32k">32 kbps (voice)</option>
+              <option value="none">Remove audio</option>
+            </select>
+          </label>
+
+          <label>Speed
+            <select id="speed">
+              <option value="fast">Fastest</option>
+              <option value="balanced" selected>Balanced</option>
+              <option value="small">Best compression (slow)</option>
+            </select>
+          </label>
+
+          <label>Trim start <small>(optional, e.g. 0:05)</small>
+            <input type="text" id="start" placeholder="0:00" inputmode="decimal" />
+          </label>
+
+          <label>Trim end <small>(optional)</small>
+            <input type="text" id="end" placeholder="end" inputmode="decimal" />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="compress" class="primary" disabled>Compress video</button>
+          <button id="cancel" class="hidden">Cancel</button>
+          <button id="clear">Clear</button>
+        </div>
+
+        <p id="status" role="status" aria-live="polite">Choose a video to begin.</p>
+        <div class="bar" id="bar" hidden><i id="progress"></i></div>
+      </section>
+
+      <section class="result hidden" id="result">
+        <video id="output" controls playsinline></video>
+        <div class="stats" id="stats"></div>
+        <a id="download" class="primary button" download>Download</a>
+      </section>
+
+      <p class="note">
+        Runs on FFmpeg compiled to WebAssembly. The first run downloads the ~30 MB engine, then it is cached.
+        Encoding is single-threaded, so long or 4K videos take a while.
+      </p>
+      </div>
+
+      <div id="imageTool" role="tabpanel" hidden>
+        <label class="drop" id="imgDrop" for="imgFiles">
+          <input type="file" id="imgFiles" accept="image/*" multiple />
+          <strong>Drop images here, click to choose, or paste (Ctrl+V)</strong>
+          <span>JPG, PNG, WebP, AVIF, GIF, BMP · many at once</span>
+        </label>
+
+        <section class="panel">
+          <div class="grid">
+            <label>Target size per image (KB)
+              <input type="number" id="imgTarget" value="500" min="5" step="10" />
+              <span class="chips">
+                <button type="button" data-kb="100">100 · Forms</button>
+                <button type="button" data-kb="200">200 · Web</button>
+                <button type="button" data-kb="500">500</button>
+                <button type="button" data-kb="1024">1 MB</button>
+              </span>
+            </label>
+
+            <label>Format
+              <select id="imgFormat">
+                <option value="image/webp">WebP (smallest, keeps transparency)</option>
+                <option value="image/jpeg">JPEG (works everywhere)</option>
+              </select>
+            </label>
+
+            <label>Max dimension
+              <select id="imgMaxDim">
+                <option value="4096">4096 px (high detail)</option>
+                <option value="2560" selected>2560 px (balanced)</option>
+                <option value="1920">1920 px</option>
+                <option value="1280">1280 px</option>
+                <option value="800">800 px (tiny)</option>
+                <option value="0">Original</option>
+              </select>
+            </label>
+
+            <label>Lowest quality allowed
+              <select id="imgFloor">
+                <option value="0.1">10% (very aggressive)</option>
+                <option value="0.2" selected>20% (strong)</option>
+                <option value="0.35">35% (moderate)</option>
+                <option value="0.5">50% (gentle)</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button id="imgCompress" class="primary" disabled>Compress images</button>
+            <button id="imgDownloadAll" class="hidden">Download all</button>
+            <button id="imgClear">Clear</button>
+          </div>
+
+          <p id="imgStatus" role="status" aria-live="polite">Choose one or more images to begin.</p>
+          <div class="bar"><i id="imgProgress"></i></div>
+          <div class="results" id="imgResults"></div>
+        </section>
+
+        <p class="note">
+          Runs in a background worker, so the page stays responsive. To hit tiny targets it lowers quality first,
+          then dimensions. Screenshots and text may show artifacts; keep your originals.
+        </p>
+      </div>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
